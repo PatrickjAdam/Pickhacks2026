@@ -58,6 +58,7 @@ app.post("/api/analyze", async (req, res) => {
   }
 });
 
-app.listen(3001, () => {
-  console.log("Proxy server running on port 3001");
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Proxy server running on port ${PORT}`);
 });
