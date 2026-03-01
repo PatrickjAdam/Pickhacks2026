@@ -31,10 +31,10 @@ app.post("/api/analyze", async (req, res) => {
     if (!prompt) {
       return res.status(400).json({ error: "No prompt provided" });
     }
-
+    //liquid/lfm-2.5-1.2b-thinking:free"
     const completion = await client.chat.completions.create({
       model: "openrouter/free", // free tier model
-      max_tokens: 1024,
+      max_tokens: 500,
       messages: [
         {
           role: "user",

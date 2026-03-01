@@ -5,7 +5,7 @@ export const GOOGLE_MAPS_API_KEY = "AIzaSyB56GujcnOprvAWbiPC-j3iSZndDsiGKOQ";
 // weight  → used in scoring (higher = more important)
 export const PLACE_CATEGORIES = [
   { type: "cafe", label: "Cafes", color: "#E07A5F", emoji: "☕", weight: 1.2 },
-  { type: "library", label: "Libraries", color: "#3D405B", emoji: "📚", weight: 1.5 },
+  { type: "library", label: "Libraries", color: "#6d708d", emoji: "📚", weight: 1.5 },
   { type: "park", label: "Parks",color: "#81B29A", emoji: "🌳", weight: 1.0 },
   { type: "community_center", label: "Community Centers", color: "#F2CC8F", emoji: "🏛️", weight: 1.8 },
   { type: "gym", label: "Gyms / Rec", color: "#5FA8D3", emoji: "🏋️", weight: 0.9 },
@@ -13,8 +13,8 @@ export const PLACE_CATEGORIES = [
 ];
 
 export const GRADE_COLORS = {
-  A: "#81B29A",
-  B: "#5FA8D3",
+  A: "#717744",
+  B: "#5FA8D3", 
   C: "#F2CC8F",
   D: "#E07A5F",
   F: "#C0392B",

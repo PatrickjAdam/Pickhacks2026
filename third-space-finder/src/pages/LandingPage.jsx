@@ -19,6 +19,13 @@
     };
 
     return (
+        <>
+        <style>{`
+         @keyframes shine {
+        0% { background-position: 200% center; }
+        100% { background-position: -200% center; }
+        }
+        `}</style>
         <div style={styles.page}>
             <img
                 src={mapBg}
@@ -29,14 +36,17 @@
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    opacity: 0.5,        // ← very faint, just a texture. increase to make it more visible
+                    opacity: 0.5,        
                     zIndex: 0,
                     pointerEvents: "none",
                 }}
             />
         <nav style={styles.nav}>
-            <span style={styles.navLogo}>Common Ground</span>
-            <span style={styles.navTag}>Smart City Project</span>
+             <div style={styles.titleRibbon}>
+                <div style={styles.titleBar} />
+                <span style={styles.navLogo}>Third Space</span>
+            </div>
+            <span style={styles.navTag}>A Smart City Project</span>
         </nav>
 
         <main style={styles.main}>
@@ -46,11 +56,11 @@
             </p>
 
             <h1 style={{ ...styles.headline, opacity: visible ? 1 : 0 }}>
-            Find your<br />Common Ground.
+            Find your<br /><span style={styles.shineText}>Third Space.</span>
             </h1>
 
             <p style={{ ...styles.description, opacity: visible ? 1 : 0 }}>
-            Every city has places where people actually connect — cafés, parks,
+            Every city has places where people actually connect - cafés, parks,
             libraries, community centers. We map them, score them, and help you
             find where community thrives.
             </p>
@@ -79,11 +89,12 @@
             
             <footer style= {styles.footer}>
                 <span>Powered by Google Places API</span>
-                <span>Common Ground · Smart City Hackathon 2026</span>
+                <span>Common Ground · Smart City Pickhacks 2026</span>
             </footer>
 
         </main>
 
         </div>
+    </>
     );
     }

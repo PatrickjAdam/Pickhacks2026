@@ -30,22 +30,20 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
   const [activeCategories, setActiveCategories] = useState(PLACE_CATEGORIES.map((c) => c.type));
   const [scoreData, setScoreData] = useState(null);
   const [searched, setSearched] = useState(false);
-
-
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Init Google Maps once on mount
   useEffect(() => {
     loadGoogleMaps(GOOGLE_MAPS_API_KEY).then((g) => {
-        setGoogle(g);
-            const map = new g.maps.Map(mapRef.current, {
-            center: { lat: 40.7128, lng: -74.006 },
-            zoom: 13,
-            styles: MAP_STYLES,
-            });
-            mapInstanceRef.current = map;
-
-        });
-    }, []);
+      setGoogle(g);
+      const map = new g.maps.Map(mapRef.current, {
+        center: { lat: 40.7128, lng: -74.006 },
+        zoom: 13,
+        styles: MAP_STYLES,
+      });
+      mapInstanceRef.current = map;
+    });
+  }, []);
 
   const clearMarkers = () => {
     markersRef.current.forEach((m) => m.setMap(null));
@@ -69,31 +67,33 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
           strokeWeight: 2,
         },
       });
+
       marker.addListener("click", () => setSelectedPlace(place));
 
       marker.addListener("mouseover", () => {
-          setHoveredPlace(place);
-          marker.setIcon({
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 22,
-            fillColor: cat?.color || "#888",
-            fillOpacity: 1,
-            strokeColor: "#fff",
-            strokeWeight: 2.5,
-            });
+        setHoveredPlace(place);
+        marker.setIcon({
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 22,
+          fillColor: cat?.color || "#888",
+          fillOpacity: 1,
+          strokeColor: "#fff",
+          strokeWeight: 2.5,
         });
+      });
 
-    marker.addListener("mouseout", () => {
+      marker.addListener("mouseout", () => {
         setHoveredPlace(null);
         marker.setIcon({
-            path: google.maps.SymbolPath.CIRCLE,
-            scale: 15,
-            fillColor: cat?.color || "#888",
-            fillOpacity: 0.9,
-            strokeColor: "#fff",
-            strokeWeight: 2,
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 15,
+          fillColor: cat?.color || "#888",
+          fillOpacity: 0.9,
+          strokeColor: "#fff",
+          strokeWeight: 2,
         });
-    });
+      });
+
       markersRef.current.push(marker);
     });
   }, [google]);
@@ -164,45 +164,65 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
     return "$".repeat(level);
   };
 
-  //---------------------------------------------END OF FUNCS-------------------------------------//
 
   return (
+    
     <div style={s.root}>
-      {/*MINTHIS----------------Header------------*/}
+        <style>{`
+            aside::-webkit-scrollbar {
+                width: 10px;
+            }
+            aside::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            aside::-webkit-scrollbar-thumb {
+                background: #717744;
+                border-radius: 999px;
+            }
+            aside::-webkit-scrollbar-thumb:hover {
+                background: #bcbd8b66;
+            }
+
+        `}</style>
+
+      {/* ── Header ── */}
       <header style={s.header}>
+
+        {/* Top row: logo + search + grade */}
         <div style={s.headerInner}>
-          <div>
+          <div style={s.titleRibbon}>
+            <div style={s.titleBar} />
             <h1 style={s.title}>Third Space</h1>
+        </div>
+
+          <div style={s.searchRow}>
+            <input
+              style={s.input}
+              placeholder="Enter a neighborhood or city (e.g. Brooklyn, NY)"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            />
+            <button style={s.searchBtn} onClick={handleSearch} disabled={loading}>
+              {loading ? "Searching…" : "Analyze →"}
+            </button>
           </div>
+
           <GradeBadge scoreData={scoreData} />
         </div>
 
-        {/*----------------Search Bar------------*/}
-        <div style={s.searchRow}>
-          <input
-            style={s.input}
-            placeholder="Enter a neighborhood or city (e.g. Brooklyn, NY)"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          />
-          <button style={s.searchBtn} onClick={handleSearch} disabled={loading}>
-            {loading ? "Searching…" : "Analyze →"}
-          </button>
-        </div>
-
-        {/*----------------PlaceFilter------------*/}
+        {/* Filters row */}
         <div style={s.filters}>
           {PLACE_CATEGORIES.map((cat) => (
             <button
-              key={cat.type}
-              style={{
-                ...s.filterChip,
-                background: activeCategories.includes(cat.type) ? cat.color : "transparent",
-                color: activeCategories.includes(cat.type) ? "#fff" : "#aaa",
-                borderColor: cat.color,
-              }}
-              onClick={() => toggleCategory(cat.type)}
+                key={cat.type}
+                style={{
+                    ...s.filterChip,
+                    background: activeCategories.includes(cat.type) ? "transparent" : "transparent",
+                    color: activeCategories.includes(cat.type) ? cat.color : "#444",
+                    borderColor: activeCategories.includes(cat.type) ? cat.color : "#333",
+                }}
+                onClick={() => toggleCategory(cat.type)}
             >
               {cat.emoji} {cat.label}
             </button>
@@ -210,25 +230,48 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
         </div>
       </header>
 
-      {/*MINTHIS----------------Main body------------*/}
+      {/* ── Main body ── */}
       <div style={s.body}>
-        {/*----------------Side Bar------------*/}
-        <aside style={s.sidebar}>
-          {searched && <ScoreCard scoreData={scoreData} 
-          places={places}
-          searchInput={searchInput}/>}
-          <PlaceList
-            places={visiblePlaces}
-            selectedPlace={selectedPlace}
-            onSelect={handleSelectPlace}
-            searched={searched}
-          />
+
+        {/* Sidebar */}
+        <aside style={{ ...s.sidebar, width: sidebarOpen ? 400 : 0, minWidth: 0, transition: "width 0.3s ease", overflow: "hidden" }}>
+            {searched && (
+                <ScoreCard scoreData={scoreData} places={places} searchInput={searchInput} />
+            )}
+            <PlaceList
+                places={visiblePlaces}
+                selectedPlace={selectedPlace}
+                onSelect={handleSelectPlace}
+                searched={searched}
+            />
         </aside>
 
+        {/* Map area */}
         <div style={s.mapContainer}>
           <div ref={mapRef} style={s.map} />
 
-          {/*-------------Hover tooltip — shows on pin mouseover---------*/}
+          <button
+            onClick={() => setSidebarOpen(p => !p)}
+            style={{
+            position: "absolute",
+            top: "50%",
+            left: 12,
+            transform: "translateY(-50%)",
+            background: "#0d0d14",
+            border: "1px solid #bcbd8b44",
+            borderRadius: "6px",
+            color: "#bcbd8b",
+            cursor: "pointer",
+            padding: "0.4rem 0.3rem",
+            zIndex: 10,
+            fontSize: "0.7rem",
+            lineHeight: 1,
+            }}
+          >
+            {sidebarOpen ? "◀" : "▶"}
+          </button>
+
+          {/* Hover tooltip — shows on pin mouseover */}
           {hoveredPlace && (
             <div style={s.mapTooltip}>
               <p style={{ margin: "0 0 0.2rem", fontWeight: 700 }}>{hoveredPlace.name}</p>

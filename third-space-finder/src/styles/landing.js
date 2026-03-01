@@ -27,10 +27,13 @@ export const landingStyles = {
     borderBottom: "1px solid #222",
   },
   navLogo: {
-    fontSize: "1rem",
-    fontWeight: 700,
-    letterSpacing: "0.01em",
+    fontSize: "2rem",
+    fontWeight: 500,
+    letterSpacing: "0.03em",
+    fontFamily: "'Cormorant Garamond', serif"
   },
+
+
   navTag: {
     fontSize: "0.75rem",
     color: "#555",
@@ -38,6 +41,8 @@ export const landingStyles = {
     textTransform: "uppercase",
   },
 
+  titleRibbon: { paddingLeft: "0.75rem", display: "flex", alignItems: "center", gap: "0.75rem" },
+  titleBar: { width: "6px", alignSelf: "stretch", background: "#bcbd8b", borderRadius: "4px", boxShadow: "0 0 30px rgba(188, 189, 139, 0.8), 0 0 30px rgba(188, 189, 139, 0.4)" },
   // Center section — takes up all remaining vertical space
   main: {
     zIndex: 1,
@@ -57,10 +62,19 @@ export const landingStyles = {
     fontSize: "0.75rem",
     letterSpacing: "0.2em",
     textTransform: "uppercase",
-    color: "#bcbd8b",
+    color: "#d8bbcb",
     marginBottom: "1.5rem",
     transition: "opacity 0.6s ease 0.1s",
   },
+
+  shineText: {
+    background: "linear-gradient(90deg, #eff1ed 0%, #eff1ed 30%, #bcbd8b 45%, #fff8dc 50%, #bcbd8b 55%, #eff1ed 70%, #eff1ed 100%)",
+    backgroundSize: "200% auto",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    backgroundClip: "text",
+    animation: "shine 4s linear infinite",
+},
 
   // Main hero headline 
   headline: {
@@ -85,21 +99,27 @@ export const landingStyles = {
   // Search bar
   searchRow: { 
     display: "flex", 
-    gap: "0.5rem", 
+    gap: "1rem", 
     marginBottom: "0.75rem",
-    transition: "opacity 0.6s ease 0.55s"
+    transition: "opacity 0.6s ease 0.55s",
+    width: "100%",
+    maxWidth: 400,    
     },
 
-  input: { flex: 1, 
+  input: { 
+    flex: 1, 
     background: "#1a1a2a", 
-    border: "1px solid #333", 
+    border: "3px solid #717744", 
     borderRadius: "8px", 
     padding: "0.6rem 1rem", 
     color: "#eee", 
     fontSize: "0.9rem", 
     outline: "none",
-    transition: "opacity 0.6s ease 0.55s"
-    },
+    transition: "opacity 0.6s ease 0.55s",
+    textAlign: "left",      
+    width: "100%",          
+    boxSizing: "border-box"
+  },
 
   // search button
   button: {

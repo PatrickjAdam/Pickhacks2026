@@ -24,26 +24,29 @@ export function computeScore(places) {
   const avgRating = places.reduce((s, p) => s + (p.rating || 3.5), 0) / total;
 
   // How dense? Caps out at 20 places = 100%
-  const densityScore = Math.min(total / 20, 1);
+  const densityScore = Math.min(total / 50, 1);
 
+  const missing = PLACE_CATEGORIES
+    .filter((c) => !typeSet.has(c.type))
+    .map((c) => c.label);
+
+  const missingPenalty = (missing.length / PLACE_CATEGORIES.length) * 15;
   // Weighted formula — change these numbers to shift priorities
   const raw =
     densityScore * 40 +          // 40% weight → quantity of places
     diversity * 35 +              // 35% weight → variety of types
-    ((avgRating - 1) / 4) * 25;  // 25% weight → quality (ratings)
+    ((avgRating - 1) / 4) * 25 - missingPenalty;;  // 25% weight → quality (ratings)
 
   const score = Math.round(raw);
 
   const grade =
-    score >= 85 ? "A" :
-    score >= 70 ? "B" :
-    score >= 55 ? "C" :
+    score >= 90 ? "A" :
+    score >= 75 ? "B" :
+    score >= 58 ? "C" :
     score >= 40 ? "D" : "F";
 
   // Which categories are completely absent?
-  const missing = PLACE_CATEGORIES
-    .filter((c) => !typeSet.has(c.type))
-    .map((c) => c.label);
+  
 
   return {
     grade,

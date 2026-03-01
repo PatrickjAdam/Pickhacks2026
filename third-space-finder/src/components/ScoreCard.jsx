@@ -29,6 +29,7 @@ export function ScoreCard({ scoreData, places, searchInput }) {
   const [aiSummary, setAiSummary] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const isGenerating = useRef(false);
+  const [aiExpanded, setAiExpanded] = useState(true);
 
   // Auto-trigger summary when scoreData changes
   useEffect(() => {
@@ -75,10 +76,12 @@ Places found: ${placeNames}
 
 Write a concise 3-paragraph analysis:
 1. A 1-2 sentence "personality" of this neighborhood
-2. What's missing and why it matters
-3. Pick the top 2-3 most interesting places and explain why they stand out
+GAP HERE
+2. What's missing and why it matters (Add this emoji at the start ⚠️)
+GAP HERE
+3. Pick the top 2-3 most interesting places and explain why they stand out and number these 1,2,3
 
-Under 150 words. No bullet points.`;
+Under 150 words.No bullet points until point 3`;
 
       const response = await fetch("http://localhost:3001/api/analyze", {
         method: "POST",
@@ -112,84 +115,51 @@ Under 150 words. No bullet points.`;
 
   return (
     <>
-      {/* ── Score breakdown ── */}
-      <div style={s.scoreCard}>
-        <h3 style={s.sidebarTitle}>Neighborhood Report</h3>
-
-        <div style={s.scoreRow}>
-          <span>Total third places</span>
-          <strong>{total}</strong>
-        </div>
-
-        <div style={s.scoreRow}>
-          <span>Type diversity</span>
-          <strong>{diversity}%</strong>
-        </div>
-
-        <div style={s.scoreRow}>
-          <span>Avg rating</span>
-          <strong>⭐ {avgRating}</strong>
-        </div>
-
-        {missing?.length > 0 && (
-          <div style={s.missingBox}>
-            <p style={s.missingTitle}>⚠️ What's missing</p>
-            {missing.map((m) => (
-              <span key={m} style={s.missingTag}>
-                {m}
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* ── AI Summary ── */}
       <div style={s.aiBox}>
-        <div style={s.aiHeader}>
-          <span style={s.aiTitle}>✦ AI Analysis</span>
-
-          {!aiLoading && aiSummary && (
-            <button style={s.aiRefresh} onClick={generateSummary}>
-              ↻
-            </button>
-          )}
-        </div>
-
-        {aiLoading && (
-            <>
-            <style>{`
+        <style>{`
             @keyframes pulse {
-                0%, 100% { opacity: 0.3; transform: scale(0.8); }
-                50% { opacity: 1; transform: scale(1.2); }
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
             }
             .ai-dot {
-                display: inline-block;
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background: #fff;
-                margin: 0 3px;
-                animation: pulse 1.2s ease-in-out infinite;
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            margin: 0 3px;
+            animation: pulse 1.2s ease-in-out infinite;
             }
             .ai-dot:nth-child(2) { animation-delay: 0.2s; }
             .ai-dot:nth-child(3) { animation-delay: 0.4s; }
-            `}</style>
-            <div style={s.aiLoading}>
-            <span className="ai-dot" />
-            <span className="ai-dot" />
-            <span className="ai-dot" />
+        `}</style>
+
+        <div style={s.aiHeader}>
+            <span style={s.aiTitle}>✦ AI Analysis</span>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+            {!aiLoading && aiSummary && (
+                <button style={s.aiRefresh} onClick={generateSummary}>↻</button>
+            )}
+            <button style={s.aiRefresh} onClick={() => setAiExpanded(p => !p)}>
+                {aiExpanded ? "▲" : "▼"}
+            </button>
             </div>
-        </>
-        )}
+        </div>
 
-        {!aiLoading && aiSummary && (
-          <p style={s.aiText}>{aiSummary}</p>
+        {aiExpanded && (
+            <>
+            {aiLoading && (
+                <div style={s.aiLoading}>
+                <span className="ai-dot" />
+                <span className="ai-dot" />
+                <span className="ai-dot" />
+                </div>
+            )}
+            {!aiLoading && aiSummary && <p style={s.aiText}>{aiSummary}</p>}
+            {!aiLoading && !aiSummary && <p style={s.aiText}>No analysis yet.</p>}
+            </>
         )}
-
-        {!aiLoading && !aiSummary && (
-          <p style={s.aiText}>No analysis yet.</p>
-        )}
-      </div>
+</div>
     </>
   );
 }
