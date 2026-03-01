@@ -34,7 +34,7 @@ app.post("/api/analyze", async (req, res) => {
     //liquid/lfm-2.5-1.2b-thinking:free"
     const completion = await client.chat.completions.create({
       model: "openrouter/free", // free tier model
-      max_tokens: 500,
+      max_tokens: 1024,
       messages: [
         {
           role: "user",
