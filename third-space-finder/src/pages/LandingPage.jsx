@@ -1,7 +1,6 @@
     import { useState, useEffect } from "react";
     import { landingStyles as styles } from "../styles/landing";
     import mapBg from "../assets/mapbg.png";
-    console.log("mapBg path:", mapBg);
     //Full Screen Landing page
 
     export default function LandingPage({ onEnter, searchInput, setSearchInput }) {
@@ -36,24 +35,24 @@
                 }}
             />
         <nav style={styles.nav}>
-            <span style={styles.navLogo}>Third Space</span>
+            <span style={styles.navLogo}>Common Ground</span>
             <span style={styles.navTag}>Smart City Project</span>
         </nav>
 
         <main style={styles.main}>
 
             <p style={{ ...styles.label, opacity: visible ? 1 : 0 }}>
-            Social Infrastructure Explorer
+            Neighborhood Social Score
             </p>
 
             <h1 style={{ ...styles.headline, opacity: visible ? 1 : 0 }}>
-            Does your city<br />have a soul?
+            Find your<br />Common Ground.
             </h1>
 
             <p style={{ ...styles.description, opacity: visible ? 1 : 0 }}>
-            Third spaces — cafés, parks, libraries, community centers —
-            are where real community happens. We score your neighborhood
-            to show what exists, and what's missing.
+            Every city has places where people actually connect — cafés, parks,
+            libraries, community centers. We map them, score them, and help you
+            find where community thrives.
             </p>
 
             {/* Search bar */}
@@ -77,6 +76,11 @@
             <p style={{ ...styles.hint, opacity: visible ? 1 : 0 }}>
             Try "Rolla, MO" or "Brooklyn, NY"
             </p>
+            
+            <footer style= {styles.footer}>
+                <span>Powered by Google Places API</span>
+                <span>Common Ground · Smart City Hackathon 2026</span>
+            </footer>
 
         </main>
 

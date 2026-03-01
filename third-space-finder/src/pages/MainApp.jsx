@@ -31,18 +31,21 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
   const [scoreData, setScoreData] = useState(null);
   const [searched, setSearched] = useState(false);
 
+
+
   // Init Google Maps once on mount
   useEffect(() => {
     loadGoogleMaps(GOOGLE_MAPS_API_KEY).then((g) => {
-      setGoogle(g);
-      const map = new g.maps.Map(mapRef.current, {
-        center: { lat: 40.7128, lng: -74.006 },
-        zoom: 13,
-        styles: MAP_STYLES,
-      });
-      mapInstanceRef.current = map;
-    });
-  }, []);
+        setGoogle(g);
+            const map = new g.maps.Map(mapRef.current, {
+            center: { lat: 40.7128, lng: -74.006 },
+            zoom: 13,
+            styles: MAP_STYLES,
+            });
+            mapInstanceRef.current = map;
+
+        });
+    }, []);
 
   const clearMarkers = () => {
     markersRef.current.forEach((m) => m.setMap(null));
@@ -67,8 +70,30 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
         },
       });
       marker.addListener("click", () => setSelectedPlace(place));
-      marker.addListener("mouseover", () => setHoveredPlace(place));
-      marker.addListener("mouseout", () => setHoveredPlace(null));
+
+      marker.addListener("mouseover", () => {
+          setHoveredPlace(place);
+          marker.setIcon({
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 22,
+            fillColor: cat?.color || "#888",
+            fillOpacity: 1,
+            strokeColor: "#fff",
+            strokeWeight: 2.5,
+            });
+        });
+
+    marker.addListener("mouseout", () => {
+        setHoveredPlace(null);
+        marker.setIcon({
+            path: google.maps.SymbolPath.CIRCLE,
+            scale: 15,
+            fillColor: cat?.color || "#888",
+            fillOpacity: 0.9,
+            strokeColor: "#fff",
+            strokeWeight: 2,
+        });
+    });
       markersRef.current.push(marker);
     });
   }, [google]);
@@ -139,17 +164,20 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
     return "$".repeat(level);
   };
 
+  //---------------------------------------------END OF FUNCS-------------------------------------//
+
   return (
     <div style={s.root}>
+      {/*MINTHIS----------------Header------------*/}
       <header style={s.header}>
         <div style={s.headerInner}>
           <div>
             <h1 style={s.title}>Third Space</h1>
-            <p style={s.subtitle}>How socially alive is your neighborhood?</p>
           </div>
           <GradeBadge scoreData={scoreData} />
         </div>
 
+        {/*----------------Search Bar------------*/}
         <div style={s.searchRow}>
           <input
             style={s.input}
@@ -163,6 +191,7 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
           </button>
         </div>
 
+        {/*----------------PlaceFilter------------*/}
         <div style={s.filters}>
           {PLACE_CATEGORIES.map((cat) => (
             <button
@@ -181,9 +210,13 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
         </div>
       </header>
 
+      {/*MINTHIS----------------Main body------------*/}
       <div style={s.body}>
+        {/*----------------Side Bar------------*/}
         <aside style={s.sidebar}>
-          {searched && <ScoreCard scoreData={scoreData} />}
+          {searched && <ScoreCard scoreData={scoreData} 
+          places={places}
+          searchInput={searchInput}/>}
           <PlaceList
             places={visiblePlaces}
             selectedPlace={selectedPlace}
@@ -195,22 +228,9 @@ export default function MainApp({ searchInput, setSearchInput, shouldSearch, set
         <div style={s.mapContainer}>
           <div ref={mapRef} style={s.map} />
 
-          {/* Hover tooltip — shows on pin mouseover */}
+          {/*-------------Hover tooltip — shows on pin mouseover---------*/}
           {hoveredPlace && (
-            <div style={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              background: "#0d0d14",
-              border: "1px solid #333",
-              borderRadius: "8px",
-              padding: "0.5rem 0.8rem",
-              zIndex: 10,
-              pointerEvents: "none",
-              fontSize: "0.85rem",
-              color: "#eee",
-              minWidth: 140,
-            }}>
+            <div style={s.mapTooltip}>
               <p style={{ margin: "0 0 0.2rem", fontWeight: 700 }}>{hoveredPlace.name}</p>
               {priceLabel(hoveredPlace.price_level) && (
                 <p style={{ margin: "0 0 0.1rem", color: "#81B29A", fontWeight: 600 }}>

@@ -29,7 +29,7 @@ export const landingStyles = {
   navLogo: {
     fontSize: "1rem",
     fontWeight: 700,
-    letterSpacing: "0.05em",
+    letterSpacing: "0.01em",
   },
   navTag: {
     fontSize: "0.75rem",
